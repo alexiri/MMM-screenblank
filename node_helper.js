@@ -12,11 +12,27 @@ module.exports = NodeHelper.create({
             console.log ("setting screen", payload.state);
 
             // Do some Magic
-            
+            if (payload.method === 'HIDE_ALL') {
+                this.hide_all(payload.state);
+            } else {
+                console.error('Unknown method:', payload.method);
+            }
+
             this.screenState = payload.state
 
             this.sendSocketNotification('SCREEN_STATE', {state: payload.state});
         }
-	}
+	},
+
+    hide_all: function(state) {
+        var self = this;
+        MM.getModules().enumerate(function(module) {
+            if (state) {
+                module.show(1000, {lockString: self.name});
+            } else {
+                module.hide(1000, {lockString: self.name});
+            }
+        });
+    },
 
 });

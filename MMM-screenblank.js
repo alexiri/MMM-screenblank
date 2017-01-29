@@ -95,7 +95,7 @@ Module.register('MMM-screenblank', {
             this.wake_timer = setTimeout(function() {
                 Log.info("reenabling schedules");
                 self.disable_schedule = false;
-            }, this.wake_time);
+            }, this.config.wake_time);
         }
     },
 

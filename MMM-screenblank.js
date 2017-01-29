@@ -67,13 +67,16 @@ Module.register('MMM-screenblank', {
         if (this.screen_state == state) { return; }
 
         if (this.config.screen_control_method == 'HIDE_ALL') {
+            if (state) {
+                Log.info('Showing all modules');
+            } else {
+                Log.info('Hiding all modules');
+            }
             var self = this;
             MM.getModules().enumerate(function(module) {
                 if (state) {
-                    Log.info('Showing all modules');
                     module.show(1000, {lockString: self.name});
                 } else {
-                    Log.info('Hiding all modules');
                     module.hide(1000, {lockString: self.name});
                 }
             });

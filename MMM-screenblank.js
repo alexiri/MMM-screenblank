@@ -64,11 +64,32 @@ Module.register('MMM-screenblank', {
                 }
                 Log.info('final state', state);
 
-                self.sendSocketNotification('SET_SCREEN_STATE', { state: state, method: self.config.method });
+                self.setScreenState(state);
             }
 
             self.checkTime();
         }, nextLoad);
+    },
+
+    setScreenState: function(state) {
+        if (this.screen_state == state) { return; }
+
+        if (this.config.screen_control_method == 'HIDE_ALL') {
+            var self = this;
+            MM.getModules().enumerate(function(module) {
+                if (state) {
+                    Log.info('Showing all modules');
+                    module.show(1000, {lockString: self.name});
+                } else {
+                    Log.info('Hiding all modules');
+                    module.hide(1000, {lockString: self.name});
+                }
+            });
+            this.screen_state = state;
+
+        } else {
+            this.sendSocketNotification('SET_SCREEN_STATE', { state: state, method: self.config.screen_control_method });
+        }
     },
 
     socketNotificationReceived: function(notification, payload) {
@@ -85,7 +106,7 @@ Module.register('MMM-screenblank', {
         if (this.config.wake_on_notifications.indexOf(notification) >= 0) {
             Log.info("disabling schedule...");
             this.disable_schedule = true;
-            this.sendSocketNotification('SET_SCREEN_STATE', { state: true, method: self.config.method });
+            this.setScreenState(true);
 
             if (this.wake_timer) {
                 clearTimeout(this.wake_timer);

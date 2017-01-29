@@ -84,8 +84,8 @@ Module.register('MMM-screenblank', {
         console.log ("notificationReceived.", notification, payload, sender);
         if (this.config.wake_on_notifications.indexOf(notification) >= 0) {
             Log.info("disabling schedule...");
-            self.disable_schedule = true;
-            self.sendSocketNotification('SET_SCREEN_STATE', { state: true });
+            this.disable_schedule = true;
+            this.sendSocketNotification('SET_SCREEN_STATE', { state: true });
 
             if (this.wake_timer) {
                 clearTimeout(this.wake_timer);
@@ -94,7 +94,7 @@ Module.register('MMM-screenblank', {
             var self = this;
             this.wake_timer = setTimeout(function() {
                 Log.info("reenabling schedules");
-                this.disable_schedule = false;
+                self.disable_schedule = false;
             }, this.wake_time);
         }
     },

@@ -1,25 +1,19 @@
 Module.register('MMM-screenblank', {
     // Default module config.
     defaults: {
-        updateInterval: 10 * 1000,
+        updateInterval: 10 * 1000, // 10 seconds
         initialLoadDelay: 0, // 0 seconds delay
 
         default_state: false,
         schedule: {
             '08:30': true,
             '09:30': false,
-
-            '11:07': true,
-            '11:08': false,
-
-            '11:30': true,
-            '11:35': false,
         },
 
         screen_control_method: 'HIDE_ALL', // one of HIDE_ALL, etc.
 
         wake_on_notifications: ['SKYWRITER_GESTURE'],
-        wake_time: 10 * 60 * 1000, // 10 minutes
+        wake_time: 5 * 60 * 1000, // 5 minutes
     },
 
 
@@ -48,7 +42,6 @@ Module.register('MMM-screenblank', {
         var self = this;
         setTimeout(function() {
             var now = moment();
-            Log.info('It is now', now.format('HH:mm:ss'));
 
             if (!self.disable_schedule) {
                 var times = _.keys(self.config.schedule);
@@ -62,7 +55,6 @@ Module.register('MMM-screenblank', {
                         break;
                     }
                 }
-                Log.info('final state', state);
 
                 self.setScreenState(state);
             }
@@ -102,9 +94,8 @@ Module.register('MMM-screenblank', {
     },
 
     notificationReceived: function(notification, payload, sender) {
-        console.log ("notificationReceived.", notification, payload, sender);
         if (this.config.wake_on_notifications.indexOf(notification) >= 0) {
-            Log.info("disabling schedule...");
+            Log.info('Waking up as ordered');
             this.disable_schedule = true;
             this.setScreenState(true);
 
@@ -114,7 +105,7 @@ Module.register('MMM-screenblank', {
 
             var self = this;
             this.wake_timer = setTimeout(function() {
-                Log.info("reenabling schedules");
+                Log.info('Returning to the schedules');
                 self.disable_schedule = false;
             }, this.config.wake_time);
         }

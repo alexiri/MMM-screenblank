@@ -64,7 +64,7 @@ Module.register('MMM-screenblank', {
                 }
                 Log.info('final state', state);
 
-                self.sendSocketNotification('SET_SCREEN_STATE', { state: state });
+                self.sendSocketNotification('SET_SCREEN_STATE', { state: state, method: self.config.method });
             }
 
             self.checkTime();
@@ -85,7 +85,7 @@ Module.register('MMM-screenblank', {
         if (this.config.wake_on_notifications.indexOf(notification) >= 0) {
             Log.info("disabling schedule...");
             this.disable_schedule = true;
-            this.sendSocketNotification('SET_SCREEN_STATE', { state: true });
+            this.sendSocketNotification('SET_SCREEN_STATE', { state: true, method: self.config.method });
 
             if (this.wake_timer) {
                 clearTimeout(this.wake_timer);
